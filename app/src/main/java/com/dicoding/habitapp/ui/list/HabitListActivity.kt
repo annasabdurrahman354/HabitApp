@@ -7,7 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -40,34 +42,38 @@ class HabitListActivity : AppCompatActivity() {
             startActivity(addIntent)
         }
 
-        adapter = HabitAdapter(fun(habit) {
-            val detailIntent = Intent(this, DetailHabitActivity::class.java)
-            detailIntent.putExtra(HABIT_ID, habit.id)
-            startActivity(detailIntent)
-        })
         recycler = findViewById(R.id.rv_habit)
         recycler.setHasFixedSize(true)
         recycler.layoutManager = GridLayoutManager(this, 2)
-
-        recycler.adapter = adapter
 
         initAction()
 
         val factory = ViewModelFactory.getInstance(this)
         viewModel = ViewModelProvider(this, factory)[HabitListViewModel::class.java]
 
-        viewModel.habits.observe(this){
-            if(it != null) {
-                adapter.submitList(it)
-            }
-        }
+        viewModel.habits.observe(this, Observer(this::showRecyclerView))
 
         viewModel.snackbarText.observe(this){
             showSnackBar(it)
         }
     }
 
-    //TODO 15 : Fixing bug : Menu not show and SnackBar not show when list is deleted using swipe 0000000000
+    private fun showRecyclerView(habit: PagedList<Habit>) {
+        adapter = HabitAdapter(fun(habit) {
+            val detailIntent = Intent(this, DetailHabitActivity::class.java)
+            detailIntent.putExtra(HABIT_ID, habit.id)
+            startActivity(detailIntent)
+        })
+        recycler.adapter = adapter
+        viewModel.habits.observe(this){
+            if(it != null) {
+                adapter.submitList(it)
+            }
+        }
+    }
+
+    // showSnackBar should observe snackbarText in viewmodel
+    // showFilteringPopUpMenu should be called when action_filter menu clicked
     private fun showSnackBar(eventMessage: Event<Int>) {
         val message = eventMessage.getContentIfNotHandled() ?: return
         Snackbar.make(

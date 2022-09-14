@@ -34,17 +34,6 @@ class SettingsActivity : AppCompatActivity() {
                     updateTheme(mode.value)
                     true
                 }
-
-            val notifyPref: Preference? = findPreference(getString(R.string.pref_key_notify))
-            notifyPref?.onPreferenceChangeListener =
-                Preference.OnPreferenceChangeListener { _, newValue ->
-                    if(newValue == true){
-
-                    }
-                    else if(newValue == false){
-                    }
-                    true
-                }
         }
 
         private fun updateTheme(mode: Int): Boolean {

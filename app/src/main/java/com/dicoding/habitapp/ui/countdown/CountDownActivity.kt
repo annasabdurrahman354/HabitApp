@@ -37,15 +37,17 @@ class CountDownActivity : AppCompatActivity() {
         }
 
         viewModel.eventCountDownFinish.observe(this){
-            updateButtonState(it)
-            if(it) startOneTimeTask(habit)
+            if(it){
+                updateButtonState(false)
+                startOneTimeTask(habit)
+            }
+            if(!it){
+                updateButtonState(true)
+            }
         }
-
-        //TODO 13 : Start and cancel One Time Request WorkManager to notify when time is up. 000000
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
             viewModel.startTimer()
-
         }
 
         findViewById<Button>(R.id.btn_stop).setOnClickListener {

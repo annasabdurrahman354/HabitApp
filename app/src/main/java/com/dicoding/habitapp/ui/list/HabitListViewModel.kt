@@ -7,9 +7,13 @@ import androidx.lifecycle.switchMap
 import androidx.paging.PagedList
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
+import com.dicoding.habitapp.data.HabitDatabase
 import com.dicoding.habitapp.data.HabitRepository
 import com.dicoding.habitapp.utils.Event
 import com.dicoding.habitapp.utils.HabitSortType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HabitListViewModel(private val habitRepository: HabitRepository) : ViewModel() {
 
